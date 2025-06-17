@@ -1,4 +1,4 @@
-package services;
+package com.api.services;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

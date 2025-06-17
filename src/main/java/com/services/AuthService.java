@@ -1,4 +1,4 @@
-package services;
+package com.api.services;
 
 import com.api.models.reuqest.LoginRequest;
 import io.restassured.response.Response;
