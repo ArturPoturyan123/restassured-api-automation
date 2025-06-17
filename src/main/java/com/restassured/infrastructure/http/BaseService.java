@@ -33,5 +33,6 @@ public class BaseService {
     protected Response deleteRequest(String endpoint) {
         return requestSpec()
                 .delete(endpoint);
+
     }
 } 
