@@ -1,4 +1,4 @@
-package com.api.models.reuqest;
+package com.restassured.domain.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 
 @Data                       // Ստեղծում է getter/setter, equals, hashCode, toString
 @NoArgsConstructor          // Դատարկ constructor
-@AllArgsConstructor         // Constructor՝ բոլոր field-ներով
-public class LoginRequest {
-    private String email;
-    private String password;
-}
+@AllArgsConstructor
+public class LoginResponse {
+    private String token;
+    private String message;
+    private User user;
+} 

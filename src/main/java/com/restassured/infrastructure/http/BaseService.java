@@ -1,4 +1,4 @@
-package com.api.services;
+package com.restassured.infrastructure.http;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -34,4 +34,4 @@ public class BaseService {
         return requestSpec()
                 .delete(endpoint);
     }
-}
+} 

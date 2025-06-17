@@ -1,4 +1,4 @@
-package com.api.models.response;
+package com.restassured.domain.entities;
 
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,4 +11,4 @@ public class User {
     private String createdAt;
     private String updatedAt;
     private int __v;
-}
+} 

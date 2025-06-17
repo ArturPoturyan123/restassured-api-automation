@@ -1,4 +1,4 @@
-package utils;
+package com.restassured.infrastructure.config;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,4 +21,4 @@ public class ConfigReader {
     public static String get(String key) {
         return properties.getProperty(key);
     }
-}
+} 
