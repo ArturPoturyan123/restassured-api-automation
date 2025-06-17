@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 
 public class AuthService extends BaseService {
 
-    private static final String LOGIN_ENDPOINT = ConfigReader.get("LoginEndpoint");
+    private static final String LOGIN_ENDPOINT = ConfigReader.get("loginEndpoint");
 
     public Response login(LoginRequest payload) {
         return postRequest(payload, LOGIN_ENDPOINT);
