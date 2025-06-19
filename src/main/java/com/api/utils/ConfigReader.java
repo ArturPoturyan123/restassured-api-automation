@@ -1,19 +1,24 @@
 package com.api.utils;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigReader {
-    private static Properties properties;
+    private static final Properties properties = new Properties();
 
     static {
         try {
-            FileInputStream file = new FileInputStream("src/main/resources/config.properties");
-            properties.load(file);
-            file.close();
-        } catch (IOException e) {
-            throw new RuntimeException("⚠️ Couldn't load config.properties file", e);
+            // ✅ Use classloader from thread context — ensures compatibility with Maven
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            InputStream input = loader.getResourceAsStream("config.properties");
+
+            if (input == null) {
+                throw new RuntimeException("❌ config.properties file not found in classpath!");
+            }
+
+            properties.load(input);
+        } catch (Exception e) {
+            throw new RuntimeException("❌ Failed to load config.properties", e);
         }
     }
 

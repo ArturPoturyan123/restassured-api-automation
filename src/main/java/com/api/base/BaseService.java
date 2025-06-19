@@ -1,5 +1,6 @@
 package com.api.base;
 
+import com.api.utils.ConfigReader;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -10,6 +11,7 @@ public class BaseService {
     protected RequestSpecification requestSpec() {
         return RestAssured
                 .given()
+                .baseUri(ConfigReader.get("baseUrl"))
                 .contentType(ContentType.JSON);
     }
 
