@@ -1,9 +1,9 @@
-package com.restassured.tests.auth;
+package com.api.tests.auth;
 
-import com.restassured.tests.TestBase;
-import com.restassured.infrastructure.services.AuthService;
-import com.restassured.domain.entities.response.LoginResponse;
-import com.restassured.domain.entities.request.LoginRequest;
+import com.api.tests.base.TestBase;
+import com.api.services.AuthService;
+import com.api.models.response.LoginResponse;
+import com.api.models.request.LoginRequest;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="APIAutomationSuite" verbose="1" parallel="false">
+    <test name="Login and Register API Tests">
+        <classes>
+            <class name="com.restassured.tests.auth.LoginAPITest"/>
+
+        </classes>
+
+    </test>
+</suite>

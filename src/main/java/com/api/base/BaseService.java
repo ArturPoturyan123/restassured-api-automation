@@ -1,4 +1,4 @@
-package com.restassured.infrastructure.http;
+package com.restassured.infrastructure.base;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

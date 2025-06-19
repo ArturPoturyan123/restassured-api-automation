@@ -1,8 +1,8 @@
-package com.restassured.tests;
+package com.api.tests.base;
 
 import io.restassured.RestAssured;
 import org.testng.annotations.BeforeMethod;
-import static com.restassured.infrastructure.config.ConfigReader.get;
+import static com.api.utils.ConfigReader.get;
 
 public class TestBase {
 

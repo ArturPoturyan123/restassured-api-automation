@@ -2,7 +2,7 @@ package com.restassured.infrastructure.services;
 
 import com.restassured.domain.entities.request.LoginRequest;
 import com.restassured.infrastructure.config.ConfigReader;
-import com.restassured.infrastructure.http.BaseService;
+import com.restassured.infrastructure.base.BaseService;
 import io.restassured.response.Response;
 
 public class AuthService extends BaseService {
