@@ -11,14 +11,22 @@ import org.testng.annotations.Test;
 public class LoginAPITest extends TestBase {
 
     @Test(description = "Verify if Login API is working...")
-    public void loginTest3() {
+    public void loginTest() {
+        // Prepare the request payload
         LoginRequest loginRequest = new LoginRequest("poturr@gmail.com", "Killeradmin123");
+
+        // Call the login service
         AuthService authService = new AuthService();
         Response response = authService.login(loginRequest);
+
+        // Deserialize the response
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        System.out.println(response.asPrettyString());
-        System.out.println(loginResponse.getMessage());
-        System.out.println(loginResponse.getToken());
-        Assert.assertEquals(loginResponse.getMessage(),"Login successful");
+
+        // Assert that login was successful
+        Assert.assertEquals(loginResponse.getMessage(), "Login successful", "Login message mismatch");
+
+        // Assert that token is present and not empty
+        Assert.assertNotNull(loginResponse.getToken(), "Token is null");
+        Assert.assertFalse(loginResponse.getToken().isEmpty(), "Token is empty");
     }
 } 
