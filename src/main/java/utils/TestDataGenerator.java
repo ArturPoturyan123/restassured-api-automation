@@ -1,4 +1,4 @@
-package com.restassured.infrastructure.utils;
+package com.restassured.utils;
 
 import java.util.UUID;
 
