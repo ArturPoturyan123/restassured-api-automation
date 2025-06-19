@@ -1,6 +1,6 @@
-package com.restassured.domain.entities.response;
+package com.api.models.response;
 
-import com.restassured.domain.entities.User;
+import com.api.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

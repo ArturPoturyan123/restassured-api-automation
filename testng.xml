@@ -4,7 +4,7 @@
 <suite name="APIAutomationSuite" verbose="1" parallel="false">
     <test name="Login and Register API Tests">
         <classes>
-            <class name="com.restassured.tests.auth.LoginAPITest"/>
+            <class name="auth.com.api.LoginAPITest"/>
 
         </classes>
 

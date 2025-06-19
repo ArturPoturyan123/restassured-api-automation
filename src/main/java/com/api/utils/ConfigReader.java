@@ -1,4 +1,4 @@
-package com.restassured.infrastructure.config;
+package com.api.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.restassured.domain.entities;
+package com.api.models;
 
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

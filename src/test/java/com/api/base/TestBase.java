@@ -1,4 +1,4 @@
-package com.api.tests.base;
+package com.api.base;
 
 import io.restassured.RestAssured;
 import org.testng.annotations.BeforeMethod;

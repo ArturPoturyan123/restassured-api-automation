@@ -1,4 +1,4 @@
-package com.restassured.domain.entities.request;
+package com.api.models.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

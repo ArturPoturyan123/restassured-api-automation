@@ -1,4 +1,4 @@
-package utils;
+package com.api.utils;
 
 import java.util.UUID;
 

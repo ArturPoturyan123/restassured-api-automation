@@ -1,8 +1,8 @@
-package com.restassured.infrastructure.services;
+package com.api.services;
 
-import com.restassured.domain.entities.request.LoginRequest;
-import com.restassured.infrastructure.config.ConfigReader;
-import com.restassured.infrastructure.base.BaseService;
+import com.api.models.request.LoginRequest;
+import com.api.utils.ConfigReader;
+import com.api.base.BaseService;
 import io.restassured.response.Response;
 
 public class AuthService extends BaseService {

@@ -1,6 +1,6 @@
 package com.api.tests.auth;
 
-import com.api.tests.base.TestBase;
+import com.api.base.TestBase;
 import com.api.services.AuthService;
 import com.api.models.response.LoginResponse;
 import com.api.models.request.LoginRequest;
@@ -9,6 +9,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class LoginAPITest extends TestBase {
+    AuthService authService = new AuthService();
+
 
     @Test(description = "Verify if Login API is working...")
     public void loginTest() {
@@ -16,7 +18,6 @@ public class LoginAPITest extends TestBase {
         LoginRequest loginRequest = new LoginRequest("poturr@gmail.com", "Killeradmin123");
 
         // Call the login service
-        AuthService authService = new AuthService();
         Response response = authService.login(loginRequest);
 
         // Deserialize the response
