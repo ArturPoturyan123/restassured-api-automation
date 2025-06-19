@@ -1,5 +1,6 @@
-package com.restassured.domain.entities;
+package com.restassured.domain.entities.response;
 
+import com.restassured.domain.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

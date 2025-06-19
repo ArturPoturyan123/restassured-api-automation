@@ -1,4 +1,4 @@
-package com.restassured.domain.entities;
+package com.restassured.domain.entities.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
