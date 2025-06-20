@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 
 public class TestBase {
@@ -28,6 +29,11 @@ public class TestBase {
 //        }
 
         System.out.println("✅ Test setup completed: baseURL + optional token");
+    }
+
+    @AfterClass
+    public void afterAllTests() {
+        System.out.println("✅ All tests finished.");
     }
 
 //    protected boolean shouldUseAuth() {
