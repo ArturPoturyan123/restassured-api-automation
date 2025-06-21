@@ -21,6 +21,10 @@ target/
 .springBeans
 .sts4-cache
 
+# Do not include Allure result and report folders
+allure-results/
+allure-report/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
