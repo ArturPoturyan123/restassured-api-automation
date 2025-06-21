@@ -10,5 +10,9 @@ public class User {
     private String email;
     private String createdAt;
     private String updatedAt;
-    private int __v;
+    private Integer  __v;
+    private Integer  age;
+    private String name;
+    private String address;
+
 } 
