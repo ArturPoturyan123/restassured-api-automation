@@ -42,7 +42,6 @@ public class LoginAPITest extends TestBase {
 
     @Test(description = "wrong email correct password")
     public void shouldFailLoginWithInvalidEmail() {
-
         String wrongEmail = "test";
         String correctPassword = ConfigReader.get("loginPassword");
         loginRequest = new LoginRequest(wrongEmail, correctPassword);
