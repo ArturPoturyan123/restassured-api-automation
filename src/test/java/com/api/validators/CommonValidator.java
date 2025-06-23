@@ -27,4 +27,8 @@ public class CommonValidator {
         Assert.assertNotNull(actual, "❌ " + fieldName + " should not be null");
     }
 
+    public static void assertNotEmpty(String actual, String fieldName) {
+        Assert.assertFalse(actual.isEmpty(), "❌ " + fieldName + " should not be empty");
+    }
+
 }

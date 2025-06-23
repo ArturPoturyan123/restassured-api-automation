@@ -7,6 +7,7 @@ public class LoginValidator {
     public static void validateSuccessfulLogin(LoginResponse response) {
         CommonValidator.assertFieldEquals(response.getMessage(), "Login successful", "message");
         CommonValidator.assertNotNull(response.getToken(), "token");
+        CommonValidator.assertNotEmpty(response.getToken(), "token");
     }
 
     public static void validateUserInfo(LoginResponse response, String expectedEmail) {

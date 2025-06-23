@@ -1,13 +1,13 @@
 package com.api.tests.auth;
 
 import com.api.base.TestBase;
-import com.api.models.User;
 import com.api.services.AuthService;
 import com.api.models.response.LoginResponse;
 import com.api.models.request.LoginRequest;
 import com.api.utils.ConfigReader;
 import com.api.utils.TestDataGenerator;
 import com.api.validators.CommonValidator;
+import com.api.validators.LoginValidator;
 import com.api.validators.UserValidator;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
@@ -39,12 +39,11 @@ public class LoginAPITest extends TestBase {
         loginRequest = new LoginRequest(loginEmail, loginPassword);
 
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 200, "Unexpected status code");
+        CommonValidator.assertStatusCode(response, 200);
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertEquals(loginResponse.getMessage(), "Login successful", "Login message mismatch");
-        Assert.assertNotNull(loginResponse.getToken(), "Token is null");
-        Assert.assertFalse(loginResponse.getToken().isEmpty(), "Token is empty");
+        LoginValidator.validateSuccessfulLogin(loginResponse);
+
     }
 
     @Test(description = "❌ Wrong email, correct password")
