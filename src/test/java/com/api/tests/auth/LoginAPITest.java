@@ -56,8 +56,7 @@ public class LoginAPITest extends TestBase {
         loginRequest = new LoginRequest(wrongEmail, correctPassword);
 
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 401, "Unexpected status code");
-
+        CommonValidator.assertStatusCode(response, 401);
         LoginResponse loginResponse = response.as(LoginResponse.class);
         Assert.assertEquals(loginResponse.getDetails(), "No user found with this email address", "Details mismatch");
         Assert.assertEquals(loginResponse.getMessage(), "Invalid email or password", "Message mismatch");
