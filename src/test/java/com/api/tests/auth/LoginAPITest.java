@@ -1,11 +1,14 @@
 package com.api.tests.auth;
 
 import com.api.base.TestBase;
+import com.api.models.User;
 import com.api.services.AuthService;
 import com.api.models.response.LoginResponse;
 import com.api.models.request.LoginRequest;
 import com.api.utils.ConfigReader;
 import com.api.utils.TestDataGenerator;
+import com.api.validators.CommonValidator;
+import com.api.validators.UserValidator;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -88,29 +91,10 @@ public class LoginAPITest extends TestBase {
         loginRequest = new LoginRequest(loginEmail, loginPassword);
 
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 200);
+        CommonValidator.assertStatusCode(response, 200);
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertNotNull(loginResponse.getUser().get_id());
-        Assert.assertFalse(loginResponse.getUser().get_id().isEmpty());
-
-        Assert.assertNotNull(loginResponse.getUser().getAge());
-        Assert.assertTrue(loginResponse.getUser().getAge() > 0);
-
-        Assert.assertNotNull(loginResponse.getUser().get__v());
-        Assert.assertTrue(loginResponse.getUser().get__v() >= 0);
-
-        Assert.assertNotNull(loginResponse.getUser().getAddress());
-        Assert.assertFalse(loginResponse.getUser().getAddress().isEmpty());
-
-        Assert.assertNotNull(loginResponse.getUser().getName());
-        Assert.assertFalse(loginResponse.getUser().getName().isEmpty());
-
-        Assert.assertNotNull(loginResponse.getUser().getCreatedAt());
-        Assert.assertFalse(loginResponse.getUser().getCreatedAt().isEmpty());
-
-        Assert.assertNotNull(loginResponse.getUser().getUpdatedAt());
-        Assert.assertFalse(loginResponse.getUser().getUpdatedAt().isEmpty());
+        UserValidator.validateUserObject(loginResponse.getUser());
     }
 
     @Test(description = "✅ Verify token changes on each login")
