@@ -5,7 +5,13 @@ import com.api.models.request.RegisterRequest;
 import com.api.models.response.RegisterResponse;
 import com.api.services.AuthService;
 import com.api.utils.TestDataGenerator;
+import com.api.validators.AuthValidator;
+import com.api.validators.CommonValidator;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import io.restassured.response.Response;
+import jdk.jfr.Description;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -32,11 +38,27 @@ public class RegisterAPITest extends TestBase {
 
 
         RegisterResponse responseBody = response.as(RegisterResponse.class);
-        Assert.assertEquals(response.getStatusCode(), 201, "Status code mismatch");
 
-        Assert.assertEquals(responseBody.getMessage(), "User registered successfully",
-                "register message mismatch");
+        AuthValidator.validateRegisterSuccess(response, responseBody);
 
     }
 
+    @Test(description = "❌ Registration should fail if email already exists")
+    @Story("Negative Registration")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Ensure registration fails if user email is already registered.")
+    public void shouldReturn400IfEmailAlreadyExists() {
+        // First register user
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail(TestDataGenerator.generateRandomEmail());
+        registerRequest.setPassword(TestDataGenerator.generateRandomPassword());
+
+        authService.register(registerRequest); // First successful attempt
+
+        // Try registering same user again
+        Response response = authService.register(registerRequest);
+        RegisterResponse responseBody = response.as(RegisterResponse.class);
+
+        AuthValidator.validateRegisterFailure(response, responseBody);
+    }
 }

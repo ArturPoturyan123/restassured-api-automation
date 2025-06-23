@@ -1,17 +1,16 @@
 package com.api.tests.auth;
 
 import com.api.base.TestBase;
-import com.api.services.AuthService;
-import com.api.models.response.LoginResponse;
 import com.api.models.request.LoginRequest;
+import com.api.models.response.LoginResponse;
+import com.api.services.AuthService;
 import com.api.utils.ConfigReader;
 import com.api.utils.TestDataGenerator;
+import com.api.validators.AuthValidator;
 import com.api.validators.CommonValidator;
-import com.api.validators.LoginValidator;
 import com.api.validators.UserValidator;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -23,10 +22,14 @@ public class LoginAPITest extends TestBase {
 
     private AuthService authService;
     private LoginRequest loginRequest;
+    private String email;
+    private String password;
 
     @BeforeMethod
     public void setUp() {
         authService = new AuthService();
+        email = ConfigReader.get("loginEmail");
+        password = ConfigReader.get("loginPassword");
     }
 
     @Test(description = "✅ Verify login with valid credentials")
@@ -34,60 +37,33 @@ public class LoginAPITest extends TestBase {
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that login succeeds with correct email and password, and returns token.")
     public void shouldReturnSuccessMessageAndTokenForValidLogin() {
-        String loginEmail = ConfigReader.get("loginEmail");
-        String loginPassword = ConfigReader.get("loginPassword");
-        loginRequest = new LoginRequest(loginEmail, loginPassword);
-
+        loginRequest = new LoginRequest(email, password);
         Response response = authService.login(loginRequest);
         CommonValidator.assertStatusCode(response, 200);
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        LoginValidator.validateSuccessfulLogin(loginResponse);
-
+        AuthValidator.validateSuccessfulLogin(loginResponse);
     }
 
-    @Test(description = "❌ Wrong email, correct password")
-    @Story("Negative Login")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Login must fail if email is incorrect even when password is correct.")
-    public void shouldFailLoginWithInvalidEmail() {
-        String wrongEmail = "wrongEmail";
-        String correctPassword = ConfigReader.get("loginPassword");
-        loginRequest = new LoginRequest(wrongEmail, correctPassword);
-
-        Response response = authService.login(loginRequest);
-        CommonValidator.assertStatusCode(response, 401);
-        LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertEquals(loginResponse.getDetails(), "No user found with this email address", "Details mismatch");
-        Assert.assertEquals(loginResponse.getMessage(), "Invalid email or password", "Message mismatch");
-    }
-
-    @Test(description = "✅ Login returns correct email")
+    @Test(description = "✅ Login returns correct email and user object")
     @Story("Successful Login")
     @Severity(SeverityLevel.MINOR)
     @Description("Ensure that the user email returned matches the one used to login.")
-    public void loginReturnsCorrectEmail() {
-        String expectedEmail = ConfigReader.get("loginEmail");
-        String password = ConfigReader.get("loginPassword");
-        loginRequest = new LoginRequest(expectedEmail, password);
-
+    public void shouldReturnCorrectUserInfo() {
+        loginRequest = new LoginRequest(email, password);
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 200, "Unexpected status code");
+        CommonValidator.assertStatusCode(response, 200);
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertNotNull(loginResponse.getUser(), "User object is null");
-        Assert.assertEquals(loginResponse.getUser().getEmail(), expectedEmail, "Email mismatch");
+        AuthValidator.validateUserInfo(loginResponse.getUser(), email);
     }
 
     @Test(description = "✅ User object structure validation")
     @Story("Successful Login")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Checks if user object contains required fields on successful login.")
-    public void shouldUserObjectPopulatedCorrectly() {
-        String loginEmail = ConfigReader.get("loginEmail");
-        String loginPassword = ConfigReader.get("loginPassword");
-        loginRequest = new LoginRequest(loginEmail, loginPassword);
-
+    public void shouldUserObjectBePopulatedCorrectly() {
+        loginRequest = new LoginRequest(email, password);
         Response response = authService.login(loginRequest);
         CommonValidator.assertStatusCode(response, 200);
 
@@ -99,37 +75,16 @@ public class LoginAPITest extends TestBase {
     @Story("Token Management")
     @Severity(SeverityLevel.NORMAL)
     @Description("Ensure login generates a new token each time.")
-    public void shouldReturnSameTokenOnConsecutiveLogins() {
-        String loginEmail = ConfigReader.get("loginEmail");
-        String password = ConfigReader.get("loginPassword");
-        loginRequest = new LoginRequest(loginEmail, password);
+    public void shouldReturnDifferentTokenOnEachLogin() {
+        loginRequest = new LoginRequest(email, password);
 
-        Response firstResponse = authService.login(loginRequest);
-        String firstToken = firstResponse.as(LoginResponse.class).getToken();
+        String firstToken = authService.login(loginRequest).as(LoginResponse.class).getToken();
+        String secondToken = authService.login(loginRequest).as(LoginResponse.class).getToken();
 
-        Response secondResponse = authService.login(loginRequest);
-        String secondToken = secondResponse.as(LoginResponse.class).getToken();
-
-        Assert.assertNotNull(firstToken);
-        Assert.assertNotNull(secondToken);
-        Assert.assertNotEquals(firstToken, secondToken, "Tokens should be different on separate logins");
-    }
-
-    @Test(description = "❌ Incorrect password")
-    @Story("Negative Login")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Login should fail when password is incorrect.")
-    public void shouldLoginFailsWithIncorrectPassword() {
-        String loginEmail = ConfigReader.get("loginEmail");
-        String wrongPassword = TestDataGenerator.generateRandomPassword();
-        loginRequest = new LoginRequest(loginEmail, wrongPassword);
-
-        Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 401);
-
-        LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertEquals(loginResponse.getMessage(), "Invalid email or password");
-        Assert.assertEquals(loginResponse.getDetails(), "The provided password is incorrect");
+        AuthValidator.validateTokenFormat(firstToken);
+        AuthValidator.validateTokenFormat(secondToken);
+        CommonValidator.assertNotEquals(firstToken, secondToken,
+                "❌ Tokens should be different on separate logins");
     }
 
     @Test(description = "✅ Token format validation")
@@ -137,17 +92,48 @@ public class LoginAPITest extends TestBase {
     @Severity(SeverityLevel.NORMAL)
     @Description("Ensure returned token follows JWT format (3 dot-separated parts).")
     public void shouldReturnValidJwtTokenFormat() {
-        String loginEmail = ConfigReader.get("loginEmail");
-        String password = ConfigReader.get("loginPassword");
-        loginRequest = new LoginRequest(loginEmail, password);
-
+        loginRequest = new LoginRequest(email, password);
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 200);
+        CommonValidator.assertStatusCode(response, 200);
 
         String token = response.as(LoginResponse.class).getToken();
-        Assert.assertNotNull(token);
-        String[] parts = token.split("\\.");
-        Assert.assertEquals(parts.length, 3, "Invalid JWT format");
+        AuthValidator.validateTokenFormat(token);
+    }
+
+    @Test(description = "❌ Incorrect email")
+    @Story("Negative Login")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Login must fail if email is incorrect even when password is correct.")
+    public void shouldFailLoginWithInvalidEmail() {
+        String wrongEmail = "wrong@email.com";
+        loginRequest = new LoginRequest(wrongEmail, password);
+        Response response = authService.login(loginRequest);
+        CommonValidator.assertStatusCode(response, 401);
+
+        LoginResponse loginResponse = response.as(LoginResponse.class);
+        AuthValidator.validateInvalidLogin(
+                loginResponse,
+                "Invalid email or password",
+                "No user found with this email address"
+        );
+    }
+
+    @Test(description = "❌ Incorrect password")
+    @Story("Negative Login")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Login should fail when password is incorrect.")
+    public void shouldFailLoginWithInvalidPassword() {
+        String wrongPassword = TestDataGenerator.generateRandomPassword();
+        loginRequest = new LoginRequest(email, wrongPassword);
+        Response response = authService.login(loginRequest);
+        CommonValidator.assertStatusCode(response, 401);
+
+        LoginResponse loginResponse = response.as(LoginResponse.class);
+        AuthValidator.validateInvalidLogin(
+                loginResponse,
+                "Invalid email or password",
+                "The provided password is incorrect"
+        );
     }
 
     @Test(description = "❌ Missing password")
@@ -155,15 +141,16 @@ public class LoginAPITest extends TestBase {
     @Severity(SeverityLevel.NORMAL)
     @Description("Login must fail when password field is empty.")
     public void shouldFailLoginWhenPasswordIsMissing() {
-        String loginEmail = ConfigReader.get("loginEmail");
-        loginRequest = new LoginRequest(loginEmail, "");
-
+        loginRequest = new LoginRequest(email, "");
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 400);
+        CommonValidator.assertStatusCode(response, 400);
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertTrue(loginResponse.getMessage().contains("Email and password are required"));
-        Assert.assertTrue(loginResponse.getDetails().contains("Please provide both email and password"));
+        AuthValidator.validateInvalidLogin(
+                loginResponse,
+                "Email and password are required",
+                "Please provide both email and password"
+        );
     }
 
     @Test(description = "❌ Missing email")
@@ -171,14 +158,15 @@ public class LoginAPITest extends TestBase {
     @Severity(SeverityLevel.NORMAL)
     @Description("Login must fail when email is missing.")
     public void shouldFailLoginWhenEmailIsMissing() {
-        String password = ConfigReader.get("loginPassword");
         loginRequest = new LoginRequest("", password);
-
         Response response = authService.login(loginRequest);
-        Assert.assertEquals(response.getStatusCode(), 400);
+        CommonValidator.assertStatusCode(response, 400);
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
-        Assert.assertEquals(loginResponse.getMessage(), "Email and password are required");
-        Assert.assertEquals(loginResponse.getDetails(), "Please provide both email and password");
+        AuthValidator.validateInvalidLogin(
+                loginResponse,
+                "Email and password are required",
+                "Please provide both email and password"
+        );
     }
 }

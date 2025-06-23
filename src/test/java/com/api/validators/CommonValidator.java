@@ -31,4 +31,12 @@ public class CommonValidator {
         Assert.assertFalse(actual.isEmpty(), "❌ " + fieldName + " should not be empty");
     }
 
+    public static void assertNotEquals(Object actual, Object expected, String fieldName) {
+        Assert.assertNotEquals(actual, expected, "❌ " + fieldName + " should not be equal");
+    }
+
+    public static void assertEquals(Object actual, Object expected, String fieldName) {
+        Assert.assertEquals(actual, expected, "❌ " + fieldName + " should be equal");
+    }
+
 }
